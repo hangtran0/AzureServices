@@ -1,0 +1,521 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"type": "string",
+			"metadata": "Workspace name",
+			"defaultValue": "mdwdosqlsrvrdevpoc"
+		},
+		"RawPurchaseData_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'RawPurchaseData'"
+		},
+		"SQLPool_ddo_azuresqldw_dw_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SQLPool_ddo_azuresqldw_dw'"
+		},
+		"mdwdosqlsrvrdevpoc-WorkspaceDefaultSqlServer_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'mdwdosqlsrvrdevpoc-WorkspaceDefaultSqlServer'"
+		},
+		"mdwdosqlsrvrdevpoc-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://mdwdostordevpoc.dfs.core.windows.net"
+		}
+	},
+	"variables": {
+		"workspaceId": "[concat('Microsoft.Synapse/workspaces/', parameters('workspaceName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('workspaceName'), '/ddo_azuresqldw_dw')]",
+			"type": "Microsoft.Synapse/workspaces/sqlPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/CopyPurchasingAnalyticsFromExcelToSQLPool')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyPurchasingAnalytics",
+						"description": "Copy the PurchasingAnalytics Excel To SQL Pool DW",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ExcelSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							},
+							"sink": {
+								"type": "SqlDWSink",
+								"preCopyScript": {
+									"value": "TRUNCATE TABLE @{pipeline().parameters.P_DBSchema}.@{replace(pipeline().parameters.P_ExcelTableName, ' ', '')}",
+									"type": "Expression"
+								},
+								"allowPolyBase": true,
+								"polyBaseSettings": {
+									"rejectValue": 0,
+									"rejectType": "value",
+									"useTypeDefault": true
+								},
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"logSettings": {
+								"enableCopyActivityLog": true,
+								"copyActivityLogSettings": {
+									"logLevel": "Info",
+									"enableReliableLogging": true
+								},
+								"logLocationSettings": {
+									"linkedServiceName": {
+										"referenceName": "RawPurchaseData",
+										"type": "LinkedServiceReference",
+										"parameters": {
+											"StorageAccountPurchaseRaw": "mdwdostordevpoc"
+										}
+									},
+									"path": "raw-purchase/Logs"
+								}
+							},
+							"dataIntegrationUnits": 2
+						},
+						"inputs": [
+							{
+								"referenceName": "PurchasingAnalyticseExcelDS",
+								"type": "DatasetReference",
+								"parameters": {
+									"P_ExcelTableName": {
+										"value": "@pipeline().parameters.P_ExcelTableName",
+										"type": "Expression"
+									},
+									"P_StorageAccountRawFiles": {
+										"value": "@pipeline().parameters.P_StorageAccountRawFiles",
+										"type": "Expression"
+									},
+									"P_ContainerRawFiles": {
+										"value": "@pipeline().parameters.P_ContainerRawFiles",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ASynapsePurchaseTableDS",
+								"type": "DatasetReference",
+								"parameters": {
+									"P_SQLPoolServername": {
+										"value": "@pipeline().parameters.P_SQLPoolServername",
+										"type": "Expression"
+									},
+									"P_SQLPoolDBName": {
+										"value": "@pipeline().parameters.P_SQLPoolDBName",
+										"type": "Expression"
+									},
+									"P_DBSchema": {
+										"value": "@pipeline().parameters.P_DBSchema",
+										"type": "Expression"
+									},
+									"P_TableName": {
+										"value": "@replace(pipeline().parameters.P_ExcelTableName, ' ', '')",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					}
+				],
+				"parameters": {
+					"P_StorageAccountRawFiles": {
+						"type": "string",
+						"defaultValue": "mdwdostordevpoc"
+					},
+					"P_ContainerRawFiles": {
+						"type": "string",
+						"defaultValue": "raw-purchase"
+					},
+					"P_ExcelTableName": {
+						"type": "string",
+						"defaultValue": "Dim Dates"
+					},
+					"P_SQLPoolServername": {
+						"type": "string",
+						"defaultValue": "mdwdosqlsrvrdevpoc.database.windows.net"
+					},
+					"P_SQLPoolDBName": {
+						"type": "string",
+						"defaultValue": "ddo_azuresqldw_dw"
+					},
+					"P_DBSchema": {
+						"type": "string",
+						"defaultValue": "purchase"
+					}
+				},
+				"variables": {
+					"V_ListOfSheetNames": {
+						"type": "String",
+						"defaultValue": "Fact PurchaseRequests,Fact PAMS,Fact PurchaseOrders,Fact Receives,Fact Payments"
+					},
+					"SheetName": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/PurchasingAnalyticseExcelDS')]",
+				"[concat(variables('workspaceId'), '/datasets/ASynapsePurchaseTableDS')]",
+				"[concat(variables('workspaceId'), '/linkedServices/RawPurchaseData')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Foreach-CopyPurchasingAnalyticsFromExcelToSQLPool')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@variables('V_ListOfSheetNames')",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"batchCount": 4,
+							"activities": [
+								{
+									"name": "Execute Pipeline1",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "CopyPurchasingAnalyticsFromExcelToSQLPool",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": false,
+										"parameters": {
+											"P_StorageAccountRawFiles": {
+												"value": "@pipeline().parameters.P_StorageAccountRawFiles",
+												"type": "Expression"
+											},
+											"P_ContainerRawFiles": {
+												"value": "@pipeline().parameters.P_ContainerRawFiles",
+												"type": "Expression"
+											},
+											"P_ExcelTableName": {
+												"value": "@item()",
+												"type": "Expression"
+											},
+											"P_SQLPoolServername": {
+												"value": "@pipeline().parameters.P_SQLPoolServername",
+												"type": "Expression"
+											},
+											"P_SQLPoolDBName": {
+												"value": "@pipeline().parameters.P_SQLPoolDBName",
+												"type": "Expression"
+											},
+											"P_DBSchema": {
+												"value": "@pipeline().parameters.P_DBSchema",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"parameters": {
+					"P_StorageAccountRawFiles": {
+						"type": "string",
+						"defaultValue": "mdwdostordevpoc"
+					},
+					"P_ContainerRawFiles": {
+						"type": "string",
+						"defaultValue": "raw-purchase"
+					},
+					"P_SQLPoolServername": {
+						"type": "string",
+						"defaultValue": "mdwdosqlsrvrdevpoc.database.windows.net"
+					},
+					"P_SQLPoolDBName": {
+						"type": "string",
+						"defaultValue": "ddo_azuresqldw_dw"
+					},
+					"P_DBSchema": {
+						"type": "string",
+						"defaultValue": "purchase"
+					}
+				},
+				"variables": {
+					"V_ListOfSheetNames": {
+						"type": "Array",
+						"defaultValue": [
+							"Fact PurchaseRequests",
+							"Fact PAMS",
+							"Fact PurchaseOrders",
+							"Fact Receives",
+							"Fact Payments"
+						]
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/pipelines/CopyPurchasingAnalyticsFromExcelToSQLPool')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ASynapsePurchaseTableDS')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SQLPool_ddo_azuresqldw_dw",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"P_SQLPoolServername": "mdwdosqlsrvrdevpoc.database.windows.net",
+						"P_SQLPoolDBName": "ddo_azuresqldw_dw"
+					}
+				},
+				"parameters": {
+					"P_SQLPoolServername": {
+						"type": "string",
+						"defaultValue": "mdwdosqlsrvrdevpoc.database.windows.net"
+					},
+					"P_SQLPoolDBName": {
+						"type": "string",
+						"defaultValue": "ddo_azuresqldw_dw"
+					},
+					"P_DBSchema": {
+						"type": "String",
+						"defaultValue": "purchase"
+					},
+					"P_TableName": {
+						"type": "String",
+						"defaultValue": "DimDates"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().P_DBSchema",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().P_TableName",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/SQLPool_ddo_azuresqldw_dw')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/PurchasingAnalyticseExcelDS')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "RawPurchaseData",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"StorageAccountPurchaseRaw": {
+							"value": "@dataset().P_StorageAccountRawFiles",
+							"type": "Expression"
+						}
+					}
+				},
+				"parameters": {
+					"P_ExcelTableName": {
+						"type": "String",
+						"defaultValue": "Dim Dates"
+					},
+					"P_StorageAccountRawFiles": {
+						"type": "String",
+						"defaultValue": "mdwdostordevpoc"
+					},
+					"P_ContainerRawFiles": {
+						"type": "String",
+						"defaultValue": "raw-purchase"
+					}
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": {
+						"value": "@dataset().P_ExcelTableName",
+						"type": "Expression"
+					},
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "Purchasing Analytics.xlsx",
+						"container": {
+							"value": "@dataset().P_ContainerRawFiles",
+							"type": "Expression"
+						}
+					},
+					"firstRowAsHeader": true
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/RawPurchaseData')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/RawPurchaseData')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"parameters": {
+					"StorageAccountPurchaseRaw": {
+						"type": "String",
+						"defaultValue": "mdwdostordevpoc"
+					}
+				},
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('RawPurchaseData_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQLPool_ddo_azuresqldw_dw')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"parameters": {
+					"P_SQLPoolServername": {
+						"type": "String",
+						"defaultValue": "mdwdosqlsrvrdevpoc.database.windows.net"
+					},
+					"P_SQLPoolDBName": {
+						"type": "String",
+						"defaultValue": "ddo_azuresqldw_dw"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"connectionString": "[parameters('SQLPool_ddo_azuresqldw_dw_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/mdwdosqlsrvrdevpoc-WorkspaceDefaultSqlServer')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"parameters": {
+					"DBName": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"connectionString": "[parameters('mdwdosqlsrvrdevpoc-WorkspaceDefaultSqlServer_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/mdwdosqlsrvrdevpoc-WorkspaceDefaultStorage')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('mdwdosqlsrvrdevpoc-WorkspaceDefaultStorage_properties_typeProperties_url')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AutoResolveIntegrationRuntime')]",
+			"type": "Microsoft.Synapse/workspaces/integrationRuntimes",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "AutoResolve",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 0
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/WorkspaceSystemIdentity')]",
+			"type": "Microsoft.Synapse/workspaces/credentials",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "ManagedIdentity",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		}
+	]
+}
