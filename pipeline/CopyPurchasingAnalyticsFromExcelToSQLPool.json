@@ -26,14 +26,20 @@
 					},
 					"sink": {
 						"type": "SqlDWSink",
+						"preCopyScript": {
+							"value": "TRUNCATE TABLE @{replace(pipeline().parameters.P_ExcelTableName, ' ', '')}",
+							"type": "Expression"
+						},
 						"allowPolyBase": true,
 						"polyBaseSettings": {
 							"rejectValue": 0,
 							"rejectType": "value",
 							"useTypeDefault": true
-						}
+						},
+						"disableMetricsCollection": false
 					},
-					"enableStaging": false
+					"enableStaging": false,
+					"dataIntegrationUnits": 2
 				},
 				"inputs": [
 					{
