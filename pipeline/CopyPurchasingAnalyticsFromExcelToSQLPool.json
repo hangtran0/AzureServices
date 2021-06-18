@@ -27,7 +27,7 @@
 					"sink": {
 						"type": "SqlDWSink",
 						"preCopyScript": {
-							"value": "TRUNCATE TABLE @{replace(pipeline().parameters.P_ExcelTableName, ' ', '')}",
+							"value": "TRUNCATE TABLE @{pipeline().parameters.P_DBSchema}.@{replace(pipeline().parameters.P_ExcelTableName, ' ', '')}",
 							"type": "Expression"
 						},
 						"allowPolyBase": true,
@@ -39,7 +39,282 @@
 						"disableMetricsCollection": false
 					},
 					"enableStaging": false,
-					"dataIntegrationUnits": 2
+					"dataIntegrationUnits": 2,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "Key",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Key",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "Date",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Date",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "Day",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Day",
+									"type": "Byte"
+								}
+							},
+							{
+								"source": {
+									"name": "DaySuffix",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DaySuffix",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Weekday",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Weekday",
+									"type": "Byte"
+								}
+							},
+							{
+								"source": {
+									"name": "WeekDayName",
+									"type": "String"
+								},
+								"sink": {
+									"name": "WeekDayName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IsWeekend",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IsWeekend",
+									"type": "Boolean"
+								}
+							},
+							{
+								"source": {
+									"name": "DOWInMonth",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DOWInMonth",
+									"type": "Byte"
+								}
+							},
+							{
+								"source": {
+									"name": "DayOfYear",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DayOfYear",
+									"type": "Byte"
+								}
+							},
+							{
+								"source": {
+									"name": "WeekOfMonth",
+									"type": "String"
+								},
+								"sink": {
+									"name": "WeekOfMonth",
+									"type": "Byte"
+								}
+							},
+							{
+								"source": {
+									"name": "WeekOfYear",
+									"type": "String"
+								},
+								"sink": {
+									"name": "WeekOfYear",
+									"type": "Byte"
+								}
+							},
+							{
+								"source": {
+									"name": "ISOWeekOfYear",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ISOWeekOfYear",
+									"type": "Byte"
+								}
+							},
+							{
+								"source": {
+									"name": "Month",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Month",
+									"type": "Byte"
+								}
+							},
+							{
+								"source": {
+									"name": "MonthName",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MonthName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Quarter",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Quarter",
+									"type": "Byte"
+								}
+							},
+							{
+								"source": {
+									"name": "QuarterName",
+									"type": "String"
+								},
+								"sink": {
+									"name": "QuarterName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Year",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Year",
+									"type": "Int16"
+								}
+							},
+							{
+								"source": {
+									"name": "MMYYYY",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MMYYYY",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MonthYear",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MonthYear",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "FirstDayOfMonth",
+									"type": "String"
+								},
+								"sink": {
+									"name": "FirstDayOfMonth",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "LastDayOfMonth",
+									"type": "String"
+								},
+								"sink": {
+									"name": "LastDayOfMonth",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "FirstDayOfQuarter",
+									"type": "String"
+								},
+								"sink": {
+									"name": "FirstDayOfQuarter",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "LastDayOfQuarter",
+									"type": "String"
+								},
+								"sink": {
+									"name": "LastDayOfQuarter",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "FirstDayOfYear",
+									"type": "String"
+								},
+								"sink": {
+									"name": "FirstDayOfYear",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "LastDayOfYear",
+									"type": "String"
+								},
+								"sink": {
+									"name": "LastDayOfYear",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "FirstDayOfNextMonth",
+									"type": "String"
+								},
+								"sink": {
+									"name": "FirstDayOfNextMonth",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "FirstDayOfNextYear",
+									"type": "String"
+								},
+								"sink": {
+									"name": "FirstDayOfNextYear",
+									"type": "DateTime"
+								}
+							}
+						]
+					}
 				},
 				"inputs": [
 					{

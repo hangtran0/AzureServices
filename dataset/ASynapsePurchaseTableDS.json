@@ -24,7 +24,7 @@
 			},
 			"P_TableName": {
 				"type": "String",
-				"defaultValue": "DimDate"
+				"defaultValue": "DimDates"
 			}
 		},
 		"annotations": [],
