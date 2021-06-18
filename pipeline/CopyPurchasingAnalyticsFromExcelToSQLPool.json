@@ -130,7 +130,7 @@
 								},
 								"sink": {
 									"name": "DayOfYear",
-									"type": "Byte"
+									"type": "Int16"
 								}
 							},
 							{
