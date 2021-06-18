@@ -1,0 +1,78 @@
+{
+	"name": "Foreach-CopyPurchasingAnalyticsFromExcelToSQLPool",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('V_ListOfSheetNames')",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"batchCount": 2,
+					"activities": [
+						{
+							"name": "Execute Pipeline1",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "CopyPurchasingAnalyticsFromExcelToSQLPool",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"P_ExcelTableName": {
+										"value": "@item()",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"P_StorageAccountRawFiles": {
+				"type": "string",
+				"defaultValue": "mdwdostordevpoc"
+			},
+			"P_ContainerRawFiles": {
+				"type": "string",
+				"defaultValue": "raw-purchase"
+			},
+			"P_ExcelTableName": {
+				"type": "string",
+				"defaultValue": "Dim Dates"
+			},
+			"P_SQLPoolServername": {
+				"type": "string",
+				"defaultValue": "mdwdosqlsrvrdevpoc.database.windows.net"
+			},
+			"P_SQLPoolDBName": {
+				"type": "string",
+				"defaultValue": "ddo_azuresqldw_dw"
+			},
+			"P_DBSchema": {
+				"type": "string",
+				"defaultValue": "purchase"
+			}
+		},
+		"variables": {
+			"V_ListOfSheetNames": {
+				"type": "String",
+				"defaultValue": "Fact PurchaseRequests,Fact PAMS,Fact PurchaseOrders,Fact Receives,Fact Payments"
+			},
+			"SheetName": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}
