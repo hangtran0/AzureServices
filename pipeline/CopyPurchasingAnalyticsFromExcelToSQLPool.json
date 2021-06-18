@@ -1,0 +1,112 @@
+{
+	"name": "CopyPurchasingAnalyticsFromExcelToSQLPool",
+	"properties": {
+		"activities": [
+			{
+				"name": "CopyPurchasingAnalytics",
+				"description": "Copy the PurchasingAnalytics Excel To SQL Pool DW",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ExcelSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						}
+					},
+					"sink": {
+						"type": "SqlDWSink",
+						"allowPolyBase": true,
+						"polyBaseSettings": {
+							"rejectValue": 0,
+							"rejectType": "value",
+							"useTypeDefault": true
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "PurchasingAnalyticseExcelDS",
+						"type": "DatasetReference",
+						"parameters": {
+							"P_ExcelTableName": {
+								"value": "@pipeline().parameters.P_ExcelTableName",
+								"type": "Expression"
+							},
+							"P_StorageAccountRawFiles": {
+								"value": "@pipeline().parameters.P_StorageAccountRawFiles",
+								"type": "Expression"
+							},
+							"P_ContainerRawFiles": {
+								"value": "@pipeline().parameters.P_ContainerRawFiles",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ASynapsePurchaseTableDS",
+						"type": "DatasetReference",
+						"parameters": {
+							"P_SQLPoolServername": {
+								"value": "@pipeline().parameters.P_SQLPoolServername",
+								"type": "Expression"
+							},
+							"P_SQLPoolDBName": {
+								"value": "@pipeline().parameters.P_SQLPoolDBName",
+								"type": "Expression"
+							},
+							"P_DBSchema": {
+								"value": "@pipeline().parameters.P_DBSchema",
+								"type": "Expression"
+							},
+							"P_TableName": {
+								"value": "@replace(pipeline().parameters.P_ExcelTableName, ' ', '')",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"P_StorageAccountRawFiles": {
+				"type": "string",
+				"defaultValue": "mdwdostordevpoc"
+			},
+			"P_ContainerRawFiles": {
+				"type": "string",
+				"defaultValue": "raw-purchase"
+			},
+			"P_ExcelTableName": {
+				"type": "string",
+				"defaultValue": "Dim Dates"
+			},
+			"P_SQLPoolServername": {
+				"type": "string",
+				"defaultValue": "mdwdosqlsrvrdevpoc.database.windows.net"
+			},
+			"P_SQLPoolDBName": {
+				"type": "string",
+				"defaultValue": "ddo_azuresqldw_dw"
+			},
+			"P_DBSchema": {
+				"type": "string",
+				"defaultValue": "purchase"
+			}
+		},
+		"annotations": []
+	}
+}
