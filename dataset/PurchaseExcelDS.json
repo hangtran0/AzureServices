@@ -5,13 +5,24 @@
 			"referenceName": "RawPurchaseData",
 			"type": "LinkedServiceReference",
 			"parameters": {
-				"StorageAccountPurchaseRaw": "mdwdostordevpoc"
+				"StorageAccountPurchaseRaw": {
+					"value": "@dataset().P_StorageAccountRawFiles",
+					"type": "Expression"
+				}
 			}
 		},
 		"parameters": {
 			"P_ExcelTableName": {
 				"type": "String",
-				"defaultValue": "Dim Date"
+				"defaultValue": "Dim Dates"
+			},
+			"P_StorageAccountRawFiles": {
+				"type": "String",
+				"defaultValue": "mdwdostordevpoc"
+			},
+			"P_ContainerRawFiles": {
+				"type": "String",
+				"defaultValue": "raw-purchase"
 			}
 		},
 		"annotations": [],
@@ -24,7 +35,10 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": "Purchasing Analytics.xlsx",
-				"container": "raw-purchase"
+				"container": {
+					"value": "@dataset().P_StorageAccountRawFiles",
+					"type": "Expression"
+				}
 			},
 			"firstRowAsHeader": true
 		},

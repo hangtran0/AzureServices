@@ -1,0 +1,44 @@
+{
+	"name": "ASynapsePurchaseTableDS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SQLPool_ddo_azuresqldw_dw",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"P_SQLPoolServername": "mdwdosqlsrvrdevpoc.database.windows.net",
+				"P_SQLPoolDBName": "ddo_azuresqldw_dw"
+			}
+		},
+		"parameters": {
+			"P_SQLPoolServername": {
+				"type": "string",
+				"defaultValue": "mdwdosqlsrvrdevpoc.database.windows.net"
+			},
+			"P_SQLPoolDBName": {
+				"type": "string",
+				"defaultValue": "ddo_azuresqldw_dw"
+			},
+			"P_DBSchema": {
+				"type": "String",
+				"defaultValue": "purchase"
+			},
+			"P_TableName": {
+				"type": "String",
+				"defaultValue": "DimDate"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().P_DBSchema",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().P_TableName",
+				"type": "Expression"
+			}
+		}
+	}
+}
