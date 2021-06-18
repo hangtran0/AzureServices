@@ -13,7 +13,7 @@
 						"type": "Expression"
 					},
 					"isSequential": false,
-					"batchCount": 2,
+					"batchCount": 4,
 					"activities": [
 						{
 							"name": "Execute Pipeline1",
@@ -25,10 +25,30 @@
 									"referenceName": "CopyPurchasingAnalyticsFromExcelToSQLPool",
 									"type": "PipelineReference"
 								},
-								"waitOnCompletion": true,
+								"waitOnCompletion": false,
 								"parameters": {
+									"P_StorageAccountRawFiles": {
+										"value": "@pipeline().parameters.P_StorageAccountRawFiles",
+										"type": "Expression"
+									},
+									"P_ContainerRawFiles": {
+										"value": "@pipeline().parameters.P_ContainerRawFiles",
+										"type": "Expression"
+									},
 									"P_ExcelTableName": {
 										"value": "@item()",
+										"type": "Expression"
+									},
+									"P_SQLPoolServername": {
+										"value": "@pipeline().parameters.P_SQLPoolServername",
+										"type": "Expression"
+									},
+									"P_SQLPoolDBName": {
+										"value": "@pipeline().parameters.P_SQLPoolDBName",
+										"type": "Expression"
+									},
+									"P_DBSchema": {
+										"value": "@pipeline().parameters.P_DBSchema",
 										"type": "Expression"
 									}
 								}
@@ -47,10 +67,6 @@
 				"type": "string",
 				"defaultValue": "raw-purchase"
 			},
-			"P_ExcelTableName": {
-				"type": "string",
-				"defaultValue": "Dim Dates"
-			},
 			"P_SQLPoolServername": {
 				"type": "string",
 				"defaultValue": "mdwdosqlsrvrdevpoc.database.windows.net"
@@ -66,11 +82,14 @@
 		},
 		"variables": {
 			"V_ListOfSheetNames": {
-				"type": "String",
-				"defaultValue": "Fact PurchaseRequests,Fact PAMS,Fact PurchaseOrders,Fact Receives,Fact Payments"
-			},
-			"SheetName": {
-				"type": "String"
+				"type": "Array",
+				"defaultValue": [
+					"Fact PurchaseRequests",
+					"Fact PAMS",
+					"Fact PurchaseOrders",
+					"Fact Receives",
+					"Fact Payments"
+				]
 			}
 		},
 		"annotations": []
