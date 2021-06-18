@@ -1,5 +1,5 @@
 {
-	"name": "PurchaseExcelDS",
+	"name": "PurchasingAnalyticseExcelDS",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "RawPurchaseData",
@@ -36,7 +36,7 @@
 				"type": "AzureBlobStorageLocation",
 				"fileName": "Purchasing Analytics.xlsx",
 				"container": {
-					"value": "@dataset().P_StorageAccountRawFiles",
+					"value": "@dataset().P_ContainerRawFiles",
 					"type": "Expression"
 				}
 			},
