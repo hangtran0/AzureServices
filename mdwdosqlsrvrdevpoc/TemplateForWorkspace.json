@@ -29,15 +29,6 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('workspaceName'), '/ddo_azuresqldw_dw')]",
-			"type": "Microsoft.Synapse/workspaces/sqlPools",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/CopyPurchasingAnalyticsFromExcelToSQLPool')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
@@ -55,7 +46,16 @@
 							"secureOutput": false,
 							"secureInput": false
 						},
-						"userProperties": [],
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "@{pipeline().parameters.P_ContainerRawFiles}//Purchasing Analytics.xlsx"
+							},
+							{
+								"name": "Destination",
+								"value": "@{pipeline().parameters.P_DBSchema}.@{replace(pipeline().parameters.P_ExcelTableName, ' ', '')}"
+							}
+						],
 						"typeProperties": {
 							"source": {
 								"type": "ExcelSource",
@@ -68,7 +68,7 @@
 							"sink": {
 								"type": "SqlDWSink",
 								"preCopyScript": {
-									"value": "TRUNCATE TABLE @{pipeline().parameters.P_DBSchema}.@{replace(pipeline().parameters.P_ExcelTableName, ' ', '')}",
+									"value": "IF Object_id('@{pipeline().parameters.P_DBSchema}.@{replace(pipeline().parameters.P_ExcelTableName, ' ', '')}', 'U') IS NOT NULL\nTRUNCATE TABLE @{pipeline().parameters.P_DBSchema}.@{replace(pipeline().parameters.P_ExcelTableName, ' ', '')}",
 									"type": "Expression"
 								},
 								"allowPolyBase": true,
@@ -80,23 +80,6 @@
 								"disableMetricsCollection": false
 							},
 							"enableStaging": false,
-							"logSettings": {
-								"enableCopyActivityLog": true,
-								"copyActivityLogSettings": {
-									"logLevel": "Info",
-									"enableReliableLogging": true
-								},
-								"logLocationSettings": {
-									"linkedServiceName": {
-										"referenceName": "RawPurchaseData",
-										"type": "LinkedServiceReference",
-										"parameters": {
-											"StorageAccountPurchaseRaw": "mdwdostordevpoc"
-										}
-									},
-									"path": "raw-purchase/Logs"
-								}
-							},
 							"dataIntegrationUnits": 2
 						},
 						"inputs": [
@@ -276,6 +259,19 @@
 					"V_ListOfSheetNames": {
 						"type": "Array",
 						"defaultValue": [
+							"Dim Dates",
+							"Dim Vendors",
+							"Dim VendorGroups",
+							"Dim Companies",
+							"Dim Departments",
+							"Dim Currencies",
+							"Dim Products",
+							"Dim ProductSubGroups",
+							"Dim ProductGroups",
+							"Dim PAMSTypes",
+							"Dim Employees",
+							"Dim SavingTypes",
+							"Dim PaymentTerms",
 							"Fact PurchaseRequests",
 							"Fact PAMS",
 							"Fact PurchaseOrders",
@@ -514,6 +510,15 @@
 			"properties": {
 				"type": "ManagedIdentity",
 				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ddo_azuresqldw_dw')]",
+			"type": "Microsoft.Synapse/workspaces/sqlPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": []
 			},
 			"dependsOn": []
 		}
