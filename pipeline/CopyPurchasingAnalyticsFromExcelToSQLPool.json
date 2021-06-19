@@ -14,7 +14,16 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [],
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "@{pipeline().parameters.P_ContainerRawFiles}//Purchasing Analytics.xlsx"
+					},
+					{
+						"name": "Destination",
+						"value": "@{pipeline().parameters.P_DBSchema}.@{replace(pipeline().parameters.P_ExcelTableName, ' ', '')}"
+					}
+				],
 				"typeProperties": {
 					"source": {
 						"type": "ExcelSource",
@@ -27,7 +36,7 @@
 					"sink": {
 						"type": "SqlDWSink",
 						"preCopyScript": {
-							"value": "TRUNCATE TABLE @{pipeline().parameters.P_DBSchema}.@{replace(pipeline().parameters.P_ExcelTableName, ' ', '')}",
+							"value": "IF Object_id('@{pipeline().parameters.P_DBSchema}.@{replace(pipeline().parameters.P_ExcelTableName, ' ', '')}', 'U') IS NOT NULL\nTRUNCATE TABLE @{pipeline().parameters.P_DBSchema}.@{replace(pipeline().parameters.P_ExcelTableName, ' ', '')}",
 							"type": "Expression"
 						},
 						"allowPolyBase": true,
@@ -39,23 +48,6 @@
 						"disableMetricsCollection": false
 					},
 					"enableStaging": false,
-					"logSettings": {
-						"enableCopyActivityLog": true,
-						"copyActivityLogSettings": {
-							"logLevel": "Info",
-							"enableReliableLogging": true
-						},
-						"logLocationSettings": {
-							"linkedServiceName": {
-								"referenceName": "RawPurchaseData",
-								"type": "LinkedServiceReference",
-								"parameters": {
-									"StorageAccountPurchaseRaw": "mdwdostordevpoc"
-								}
-							},
-							"path": "raw-purchase/Logs"
-						}
-					},
 					"dataIntegrationUnits": 2
 				},
 				"inputs": [
