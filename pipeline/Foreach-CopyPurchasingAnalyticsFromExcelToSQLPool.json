@@ -105,10 +105,27 @@
 						"referenceName": "ASynapsePurchaseTableDS",
 						"type": "DatasetReference",
 						"parameters": {
-							"P_SQLPoolServername": "mdwdosqlsrvrdevpoc.database.windows.net",
-							"P_SQLPoolDBName": "ddo_azuresqldw_dw",
-							"P_DBSchema": "purchase",
-							"P_TableName": "DimDates"
+							"P_SQLPoolServername": {
+								"value": "@pipeline().parameters.P_SQLPoolServername",
+								"type": "Expression"
+							},
+							"P_SQLPoolDBName": {
+								"value": "@pipeline().parameters.P_SQLPoolDBName",
+								"type": "Expression"
+							},
+							"P_DBSchema": {
+								"value": "@pipeline().parameters.P_DBSchema",
+								"type": "Expression"
+							},
+							"P_TableName": "DimDates",
+							"P_SQLUserName": {
+								"value": "@pipeline().parameters.P_SQLUserName",
+								"type": "Expression"
+							},
+							"P_SQLServerPass": {
+								"value": "@pipeline().parameters.P_SQLServerPass",
+								"type": "Expression"
+							}
 						}
 					},
 					"firstRowOnly": true
@@ -162,6 +179,14 @@
 						},
 						"P_SQLPoolDBName": {
 							"value": "@pipeline().parameters.P_SQLPoolDBName",
+							"type": "Expression"
+						},
+						"P_SQLServerPass": {
+							"value": "@pipeline().parameters.P_SQLServerPass",
+							"type": "Expression"
+						},
+						"P_SQLUserName": {
+							"value": "@pipeline().parameters.P_SQLUserName",
 							"type": "Expression"
 						}
 					}
@@ -219,6 +244,14 @@
 						},
 						"P_SQLPoolDBName": {
 							"value": "@pipeline().parameters.P_SQLPoolDBName",
+							"type": "Expression"
+						},
+						"P_SQLServerPass": {
+							"value": "@pipeline().parameters.P_SQLServerPass",
+							"type": "Expression"
+						},
+						"P_SQLUserName": {
+							"value": "@pipeline().parameters.P_SQLUserName",
 							"type": "Expression"
 						}
 					}
