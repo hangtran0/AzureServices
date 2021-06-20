@@ -24,7 +24,7 @@
 				"userProperties": [
 					{
 						"name": "Source",
-						"value": "@{pipeline().parameters.P_ContainerRawFiles}//Purchasing Analytics.xlsx"
+						"value": "@{pipeline().parameters.P_ContainerRawFiles} Sheet name: @{P_ExcelTableName}"
 					},
 					{
 						"name": "Destination",
@@ -222,7 +222,10 @@
 						"storedProcedureParameters": {
 							"ProcessName": {
 								"type": "String",
-								"value": "@{pipeline().Pipeline}_@{pipeline().parameters.P_DBSchema}.@{replace(pipeline().parameters.P_ExcelTableName, ' ', '')}"
+								"value": {
+									"value": "@{pipeline().Pipeline}_@{pipeline().parameters.P_DBSchema}.@{replace(pipeline().parameters.P_ExcelTableName, ' ', '')}",
+									"type": "Expression"
+								}
 							}
 						},
 						"queryTimeout": "02:00:00",
