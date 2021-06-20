@@ -371,7 +371,7 @@
 								"type": "Expression"
 							},
 							"isSequential": false,
-							"batchCount": 4,
+							"batchCount": 10,
 							"activities": [
 								{
 									"name": "Execute Pipeline1",
@@ -603,7 +603,24 @@
 					"V_ListOfSheetNames": {
 						"type": "Array",
 						"defaultValue": [
-							"[\"Dim ]"
+							"Dim Dates",
+							"Dim Vendors",
+							"Dim VendorGroups",
+							"Dim Companies",
+							"Dim Departments",
+							"Dim Currencies",
+							"Dim Products",
+							"Dim ProductSubGroups",
+							"Dim ProductGroups",
+							"Dim PAMSTypes",
+							"Dim Employees",
+							"Dim SavingTypes",
+							"Dim PaymentTerms",
+							"Fact PurchaseRequests",
+							"Fact PAMS",
+							"Fact PurchaseOrders",
+							"Fact Receives",
+							"Fact Payments"
 						]
 					}
 				},
