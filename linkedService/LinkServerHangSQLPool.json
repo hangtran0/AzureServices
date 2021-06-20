@@ -1,0 +1,25 @@
+{
+	"name": "LinkServerHangSQLPool",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDW",
+		"typeProperties": {
+			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:hangsynapse.sql.azuresynapse.net;Initial Catalog=HangSQLPool;User ID=sqladminuser",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "KeyVault_StorageAccount_hangdl01",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"akv-StorageAccount-hangdl": "https://akv-hangdl.vault.azure.net/"
+					}
+				},
+				"secretName": "hangsynapse-sqlpoolpass"
+			}
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
