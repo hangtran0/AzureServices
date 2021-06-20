@@ -13,7 +13,7 @@
 			},
 			"P_SQLServerPass": {
 				"type": "String",
-				"defaultValue": "mdwdo-azsql-SqlP@ss-poc"
+				"defaultValue": "123"
 			},
 			"P_SQLUserName": {
 				"type": "String",
