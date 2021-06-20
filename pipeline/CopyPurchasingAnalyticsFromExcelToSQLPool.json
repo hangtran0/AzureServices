@@ -281,6 +281,7 @@
 								"value": "@pipeline().parameters.P_DBSchema",
 								"type": "Expression"
 							},
+							"P_TableName": "DimDates",
 							"P_SQLUserName": {
 								"value": "@pipeline().parameters.P_SQLUserName",
 								"type": "Expression"
