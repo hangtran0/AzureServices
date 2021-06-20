@@ -1,33 +1,41 @@
 {
 	"name": "SQLPool_ddo_azuresqldw_dw",
-	"type": "Microsoft.Synapse/workspaces/linkedservices",
 	"properties": {
 		"parameters": {
-			"P_SQLPoolServername": {
-				"type": "String",
-				"defaultValue": "mdwdosqlsrvrdevpoc.database.windows.net"
+			"P_AKV_VaultURI": {
+				"type": "string",
+				"defaultValue": "uri"
 			},
-			"P_SQLPoolDBName": {
+			"P_AKU_SecretName": {
 				"type": "String",
-				"defaultValue": "ddo_azuresqldw_dw"
-			},
-			"P_SQLServerPass": {
-				"type": "String",
-				"defaultValue": "123"
-			},
-			"P_SQLUserName": {
-				"type": "String",
-				"defaultValue": "sqladmin"
+				"defaultValue": "serect name"
 			}
 		},
 		"annotations": [],
 		"type": "AzureSqlDW",
 		"typeProperties": {
-			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=@{linkedService().P_SQLPoolServername};Initial Catalog=@{linkedService().P_SQLPoolDBName};User ID=@{linkedService().P_SQLUserName};Password=@{linkedService().P_SQLServerPass}"
+			"connectionString": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AzureKeyVault1",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"P_VaultURI": {
+							"value": "@linkedService().P_AKV_VaultURI",
+							"type": "Expression"
+						}
+					}
+				},
+				"secretName": {
+					"value": "@linkedService().P_AKU_SecretName",
+					"type": "Expression"
+				}
+			}
 		},
 		"connectVia": {
 			"referenceName": "AutoResolveIntegrationRuntime",
 			"type": "IntegrationRuntimeReference"
 		}
-	}
+	},
+	"type": "Microsoft.Synapse/workspaces/linkedservices"
 }
