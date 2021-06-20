@@ -1,0 +1,16 @@
+{
+	"name": "AzureKeyVault1",
+	"properties": {
+		"parameters": {
+			"P_VaultURI": {
+				"type": "String",
+				"defaultValue": "uri"
+			}
+		},
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "@{linkedService().P_VaultURI}"
+		}
+	}
+}
