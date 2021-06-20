@@ -5,24 +5,32 @@
 			"referenceName": "RawPurchaseData",
 			"type": "LinkedServiceReference",
 			"parameters": {
-				"StorageAccountPurchaseRaw": {
-					"value": "@dataset().P_StorageAccountRawFiles",
+				"P_VaultURI_StorageAccount": {
+					"value": "@dataset().P_VaultURI_StorageAccount",
+					"type": "Expression"
+				},
+				"P_SerectName_StorageAccount": {
+					"value": "@dataset().P_SerectName_StorageAccount",
 					"type": "Expression"
 				}
 			}
 		},
 		"parameters": {
-			"P_ExcelTableName": {
+			"P_VaultURI_StorageAccount": {
 				"type": "String",
-				"defaultValue": "Dim Dates"
+				"defaultValue": "VaultURI"
 			},
-			"P_StorageAccountRawFiles": {
+			"P_SerectName_StorageAccount": {
 				"type": "String",
-				"defaultValue": "mdwdostordevpoc"
+				"defaultValue": "SerectName"
 			},
 			"P_ContainerRawFiles": {
 				"type": "String",
 				"defaultValue": "raw-purchase"
+			},
+			"P_ExcelTableName": {
+				"type": "string",
+				"defaultValue": "Dim Dates"
 			}
 		},
 		"annotations": [],

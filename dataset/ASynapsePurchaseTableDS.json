@@ -5,48 +5,32 @@
 			"referenceName": "SQLPool_ddo_azuresqldw_dw",
 			"type": "LinkedServiceReference",
 			"parameters": {
-				"P_SQLPoolServername": {
-					"value": "@dataset().P_SQLPoolServername",
+				"P_AKV_VaultURI_SQLPool": {
+					"value": "@dataset().P_AKV_VaultURI_SQLPool",
 					"type": "Expression"
 				},
-				"P_SQLPoolDBName": {
-					"value": "@dataset().P_SQLPoolDBName",
-					"type": "Expression"
-				},
-				"P_SQLServerPass": {
-					"value": "@dataset().P_SQLServerPass",
-					"type": "Expression"
-				},
-				"P_SQLUserName": {
-					"value": "@dataset().P_SQLUserName",
+				"P_AKU_SecretName_SQLPool": {
+					"value": "@dataset().P_AKU_SecretName_SQLPool",
 					"type": "Expression"
 				}
 			}
 		},
 		"parameters": {
-			"P_SQLPoolServername": {
+			"P_AKV_VaultURI_SQLPool": {
 				"type": "string",
-				"defaultValue": "mdwdosqlsrvrdevpoc.database.windows.net"
+				"defaultValue": "Vault URI"
 			},
-			"P_SQLPoolDBName": {
+			"P_AKU_SecretName_SQLPool": {
 				"type": "string",
-				"defaultValue": "ddo_azuresqldw_dw"
+				"defaultValue": "AKV Serect Name"
 			},
 			"P_DBSchema": {
-				"type": "String",
+				"type": "string",
 				"defaultValue": "purchase"
 			},
 			"P_TableName": {
-				"type": "String",
-				"defaultValue": "DimDates"
-			},
-			"P_SQLUserName": {
 				"type": "string",
-				"defaultValue": "sqladmin"
-			},
-			"P_SQLServerPass": {
-				"type": "string",
-				"defaultValue": "123"
+				"defaultValue": "DimVendors"
 			}
 		},
 		"annotations": [],
