@@ -162,7 +162,7 @@
 							"type": "Expression"
 						},
 						"P_AKU_SecretName_SQLPool": {
-							"value": "@pipeline().parameters.P_SerectName_StorageAccount",
+							"value": "@pipeline().parameters.P_AKU_SecretName_SQLPool",
 							"type": "Expression"
 						}
 					}
