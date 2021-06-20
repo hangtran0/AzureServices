@@ -712,10 +712,22 @@
 					"referenceName": "SQLPool_ddo_azuresqldw_dw",
 					"type": "LinkedServiceReference",
 					"parameters": {
-						"P_SQLPoolServername": "mdwdosqlsrvrdevpoc.database.windows.net",
-						"P_SQLPoolDBName": "ddo_azuresqldw_dw",
-						"P_SQLServerPass": "mdwdo-azsql-SqlP@ss-poc",
-						"P_SQLUserName": "sqladmin"
+						"P_SQLPoolServername": {
+							"value": "@dataset().P_SQLPoolServername",
+							"type": "Expression"
+						},
+						"P_SQLPoolDBName": {
+							"value": "@dataset().P_SQLPoolDBName",
+							"type": "Expression"
+						},
+						"P_SQLServerPass": {
+							"value": "@dataset().P_SQLServerPass",
+							"type": "Expression"
+						},
+						"P_SQLUserName": {
+							"value": "@dataset().P_SQLUserName",
+							"type": "Expression"
+						}
 					}
 				},
 				"parameters": {
