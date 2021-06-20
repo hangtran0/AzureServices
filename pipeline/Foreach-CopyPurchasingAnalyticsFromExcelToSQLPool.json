@@ -138,6 +138,9 @@
 						"Status": {
 							"value": "PASSED",
 							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": null
 						}
 					}
 				},
@@ -187,6 +190,13 @@
 						},
 						"Status": {
 							"value": "FAILED",
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": {
+								"value": "@activity('Execute Pipeline1').output.errors[0].Message",
+								"type": "Expression"
+							},
 							"type": "String"
 						}
 					}

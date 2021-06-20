@@ -24,7 +24,7 @@
 				"userProperties": [
 					{
 						"name": "Source",
-						"value": "@{pipeline().parameters.P_ContainerRawFiles} Sheet name: @{P_ExcelTableName}"
+						"value": "@{pipeline().parameters.P_ContainerRawFiles}//Purchasing Analytics.xlsx"
 					},
 					{
 						"name": "Destination",
@@ -279,12 +279,6 @@
 			"P_DBSchema": {
 				"type": "string",
 				"defaultValue": "purchase"
-			}
-		},
-		"variables": {
-			"V_ListOfSheetNames": {
-				"type": "String",
-				"defaultValue": "Fact PurchaseRequests,Fact PAMS,Fact PurchaseOrders,Fact Receives,Fact Payments"
 			}
 		},
 		"annotations": []
