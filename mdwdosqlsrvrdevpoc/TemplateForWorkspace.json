@@ -7,17 +7,21 @@
 			"metadata": "Workspace name",
 			"defaultValue": "mdwdosqlsrvrdevpoc"
 		},
-		"RawPurchaseData_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'RawPurchaseData'"
-		},
-		"SQLPool_ddo_azuresqldw_dw_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'SQLPool_ddo_azuresqldw_dw'"
-		},
 		"mdwdosqlsrvrdevpoc-WorkspaceDefaultSqlServer_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'mdwdosqlsrvrdevpoc-WorkspaceDefaultSqlServer'"
+		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "@{linkedService().P_VaultURI}"
+		},
+		"RawPurchaseData_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "@linkedService().P_SerectName_StorageAccount"
+		},
+		"SQLPool_ddo_azuresqldw_dw_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "@linkedService().P_AKU_SecretName_SQLPool"
 		},
 		"mdwdosqlsrvrdevpoc-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"type": "string",
@@ -103,16 +107,20 @@
 								"referenceName": "PurchasingAnalyticseExcelDS",
 								"type": "DatasetReference",
 								"parameters": {
-									"P_ExcelTableName": {
-										"value": "@pipeline().parameters.P_ExcelTableName",
+									"P_VaultURI_StorageAccount": {
+										"value": "@pipeline().parameters.P_AKV_VaultURI",
 										"type": "Expression"
 									},
-									"P_StorageAccountRawFiles": {
-										"value": "@pipeline().parameters.P_StorageAccountRawFiles",
+									"P_SerectName_StorageAccount": {
+										"value": "@pipeline().parameters.P_SerectName_StorageAccount",
 										"type": "Expression"
 									},
 									"P_ContainerRawFiles": {
 										"value": "@pipeline().parameters.P_ContainerRawFiles",
+										"type": "Expression"
+									},
+									"P_ExcelTableName": {
+										"value": "@pipeline().parameters.P_ExcelTableName",
 										"type": "Expression"
 									}
 								}
@@ -123,12 +131,12 @@
 								"referenceName": "ASynapsePurchaseTableDS",
 								"type": "DatasetReference",
 								"parameters": {
-									"P_SQLPoolServername": {
-										"value": "@pipeline().parameters.P_SQLPoolServername",
+									"P_AKV_VaultURI_SQLPool": {
+										"value": "@pipeline().parameters.P_AKV_VaultURI",
 										"type": "Expression"
 									},
-									"P_SQLPoolDBName": {
-										"value": "@pipeline().parameters.P_SQLPoolDBName",
+									"P_AKU_SecretName_SQLPool": {
+										"value": "@pipeline().parameters.P_AKU_SecretName_SQLPool",
 										"type": "Expression"
 									},
 									"P_DBSchema": {
@@ -137,14 +145,6 @@
 									},
 									"P_TableName": {
 										"value": "@replace(pipeline().parameters.P_ExcelTableName, ' ', '')",
-										"type": "Expression"
-									},
-									"P_SQLUserName": {
-										"value": "@pipeline().parameters.P_SQLUserName",
-										"type": "Expression"
-									},
-									"P_SQLServerPass": {
-										"value": "@pipeline().parameters.P_SQLServerPass",
 										"type": "Expression"
 									}
 								}
@@ -193,20 +193,12 @@
 							"referenceName": "SQLPool_ddo_azuresqldw_dw",
 							"type": "LinkedServiceReference",
 							"parameters": {
-								"P_SQLPoolServername": {
-									"value": "@pipeline().parameters.P_SQLPoolServername",
+								"P_AKV_VaultURI_SQLPool": {
+									"value": "@pipeline().parameters.P_AKV_VaultURI",
 									"type": "Expression"
 								},
-								"P_SQLPoolDBName": {
-									"value": "@pipeline().parameters.P_SQLPoolDBName",
-									"type": "Expression"
-								},
-								"P_SQLServerPass": {
-									"value": "@pipeline().parameters.P_SQLServerPass",
-									"type": "Expression"
-								},
-								"P_SQLUserName": {
-									"value": "@pipeline().parameters.P_SQLUserName",
+								"P_AKU_SecretName_SQLPool": {
+									"value": "@pipeline().parameters.P_AKU_SecretName_SQLPool",
 									"type": "Expression"
 								}
 							}
@@ -258,20 +250,12 @@
 							"referenceName": "SQLPool_ddo_azuresqldw_dw",
 							"type": "LinkedServiceReference",
 							"parameters": {
-								"P_SQLPoolServername": {
-									"value": "@pipeline().parameters.P_SQLPoolServername",
+								"P_AKV_VaultURI_SQLPool": {
+									"value": "@pipeline().parameters.P_AKV_VaultURI",
 									"type": "Expression"
 								},
-								"P_SQLPoolDBName": {
-									"value": "@pipeline().parameters.P_SQLPoolDBName",
-									"type": "Expression"
-								},
-								"P_SQLServerPass": {
-									"value": "@pipeline().parameters.P_SQLServerPass",
-									"type": "Expression"
-								},
-								"P_SQLUserName": {
-									"value": "@pipeline().parameters.P_SQLUserName",
+								"P_AKU_SecretName_SQLPool": {
+									"value": "@pipeline().parameters.P_AKU_SecretName_SQLPool",
 									"type": "Expression"
 								}
 							}
@@ -310,26 +294,19 @@
 								"referenceName": "ASynapsePurchaseTableDS",
 								"type": "DatasetReference",
 								"parameters": {
-									"P_SQLPoolServername": {
-										"value": "@pipeline().parameters.P_SQLPoolServername",
+									"P_AKV_VaultURI_SQLPool": {
+										"value": "@pipeline().parameters.P_AKV_VaultURI",
 										"type": "Expression"
 									},
-									"P_SQLPoolDBName": {
-										"value": "@pipeline().parameters.P_SQLPoolDBName",
+									"P_AKU_SecretName_SQLPool": {
+										"value": "@pipeline().parameters.P_AKU_SecretName_SQLPool",
 										"type": "Expression"
 									},
 									"P_DBSchema": {
 										"value": "@pipeline().parameters.P_DBSchema",
 										"type": "Expression"
 									},
-									"P_SQLUserName": {
-										"value": "@pipeline().parameters.P_SQLUserName",
-										"type": "Expression"
-									},
-									"P_SQLServerPass": {
-										"value": "@pipeline().parameters.P_SQLServerPass",
-										"type": "Expression"
-									}
+									"P_TableName": "DimDates"
 								}
 							},
 							"firstRowOnly": true
@@ -337,9 +314,9 @@
 					}
 				],
 				"parameters": {
-					"P_StorageAccountRawFiles": {
+					"P_SerectName_StorageAccount": {
 						"type": "string",
-						"defaultValue": "mdwdostordevpoc"
+						"defaultValue": "StorageAccount-mdwdostordevpoc"
 					},
 					"P_ContainerRawFiles": {
 						"type": "string",
@@ -349,25 +326,17 @@
 						"type": "string",
 						"defaultValue": "Dim Vendors"
 					},
-					"P_SQLPoolServername": {
+					"P_AKV_VaultURI": {
 						"type": "string",
-						"defaultValue": "mdwdosqlsrvrdevpoc.database.windows.net"
+						"defaultValue": "https://akv-dev-sqt.vault.azure.net/"
 					},
-					"P_SQLPoolDBName": {
+					"P_AKU_SecretName_SQLPool": {
 						"type": "string",
-						"defaultValue": "ddo_azuresqldw_dw"
+						"defaultValue": "SQLPool-HangSQLPool-Learn1"
 					},
 					"P_DBSchema": {
 						"type": "string",
 						"defaultValue": "purchase"
-					},
-					"P_SQLUserName": {
-						"type": "string",
-						"defaultValue": "sqladmin"
-					},
-					"P_SQLServerPass": {
-						"type": "string",
-						"defaultValue": "123"
 					}
 				},
 				"annotations": []
@@ -416,8 +385,8 @@
 										},
 										"waitOnCompletion": false,
 										"parameters": {
-											"P_StorageAccountRawFiles": {
-												"value": "@pipeline().parameters.P_StorageAccountRawFiles",
+											"P_SerectName_StorageAccount": {
+												"value": "@pipeline().parameters.P_SerectName_StorageAccount",
 												"type": "Expression"
 											},
 											"P_ContainerRawFiles": {
@@ -428,24 +397,16 @@
 												"value": "@item()",
 												"type": "Expression"
 											},
-											"P_SQLPoolServername": {
-												"value": "@pipeline().parameters.P_SQLPoolServername",
+											"P_AKV_VaultURI": {
+												"value": "@pipeline().parameters.P_AKV_VaultURI",
 												"type": "Expression"
 											},
-											"P_SQLPoolDBName": {
-												"value": "@pipeline().parameters.P_SQLPoolDBName",
+											"P_AKU_SecretName_SQLPool": {
+												"value": "@pipeline().parameters.P_AKU_SecretName_SQLPool",
 												"type": "Expression"
 											},
 											"P_DBSchema": {
 												"value": "@pipeline().parameters.P_DBSchema",
-												"type": "Expression"
-											},
-											"P_SQLUserName": {
-												"value": "@pipeline().parameters.P_SQLUserName",
-												"type": "Expression"
-											},
-											"P_SQLServerPass": {
-												"value": "@pipeline().parameters.P_SQLServerPass",
 												"type": "Expression"
 											}
 										}
@@ -487,27 +448,19 @@
 								"referenceName": "ASynapsePurchaseTableDS",
 								"type": "DatasetReference",
 								"parameters": {
-									"P_SQLPoolServername": {
-										"value": "@pipeline().parameters.P_SQLPoolServername",
+									"P_AKV_VaultURI_SQLPool": {
+										"value": "@pipeline().parameters.P_AKV_VaultURI",
 										"type": "Expression"
 									},
-									"P_SQLPoolDBName": {
-										"value": "@pipeline().parameters.P_SQLPoolDBName",
+									"P_AKU_SecretName_SQLPool": {
+										"value": "@pipeline().parameters.P_AKU_SecretName_SQLPool",
 										"type": "Expression"
 									},
 									"P_DBSchema": {
 										"value": "@pipeline().parameters.P_DBSchema",
 										"type": "Expression"
 									},
-									"P_TableName": "DimDates",
-									"P_SQLUserName": {
-										"value": "@pipeline().parameters.P_SQLUserName",
-										"type": "Expression"
-									},
-									"P_SQLServerPass": {
-										"value": "@pipeline().parameters.P_SQLServerPass",
-										"type": "Expression"
-									}
+									"P_TableName": "DimDates"
 								}
 							},
 							"firstRowOnly": true
@@ -555,20 +508,12 @@
 							"referenceName": "SQLPool_ddo_azuresqldw_dw",
 							"type": "LinkedServiceReference",
 							"parameters": {
-								"P_SQLPoolServername": {
-									"value": "@pipeline().parameters.P_SQLPoolServername",
+								"P_AKV_VaultURI_SQLPool": {
+									"value": "@pipeline().parameters.P_AKV_VaultURI",
 									"type": "Expression"
 								},
-								"P_SQLPoolDBName": {
-									"value": "@pipeline().parameters.P_SQLPoolDBName",
-									"type": "Expression"
-								},
-								"P_SQLServerPass": {
-									"value": "@pipeline().parameters.P_SQLServerPass",
-									"type": "Expression"
-								},
-								"P_SQLUserName": {
-									"value": "@pipeline().parameters.P_SQLUserName",
+								"P_AKU_SecretName_SQLPool": {
+									"value": "@pipeline().parameters.P_SerectName_StorageAccount",
 									"type": "Expression"
 								}
 							}
@@ -620,20 +565,12 @@
 							"referenceName": "SQLPool_ddo_azuresqldw_dw",
 							"type": "LinkedServiceReference",
 							"parameters": {
-								"P_SQLPoolServername": {
-									"value": "@pipeline().parameters.P_SQLPoolServername",
+								"P_AKV_VaultURI_SQLPool": {
+									"value": "@pipeline().parameters.P_AKV_VaultURI",
 									"type": "Expression"
 								},
-								"P_SQLPoolDBName": {
-									"value": "@pipeline().parameters.P_SQLPoolDBName",
-									"type": "Expression"
-								},
-								"P_SQLServerPass": {
-									"value": "@pipeline().parameters.P_SQLServerPass",
-									"type": "Expression"
-								},
-								"P_SQLUserName": {
-									"value": "@pipeline().parameters.P_SQLUserName",
+								"P_AKU_SecretName_SQLPool": {
+									"value": "@pipeline().parameters.P_AKU_SecretName_SQLPool",
 									"type": "Expression"
 								}
 							}
@@ -641,33 +578,25 @@
 					}
 				],
 				"parameters": {
-					"P_StorageAccountRawFiles": {
+					"P_AKV_VaultURI": {
 						"type": "string",
-						"defaultValue": "mdwdostordevpoc"
+						"defaultValue": "https://akv-dev-sqt.vault.azure.net/"
 					},
 					"P_ContainerRawFiles": {
 						"type": "string",
 						"defaultValue": "raw-purchase"
 					},
-					"P_SQLPoolServername": {
+					"P_SerectName_StorageAccount": {
 						"type": "string",
-						"defaultValue": "mdwdosqlsrvrdevpoc.database.windows.net"
+						"defaultValue": "StorageAccount-mdwdostordevpoc"
 					},
-					"P_SQLPoolDBName": {
+					"P_AKU_SecretName_SQLPool": {
 						"type": "string",
-						"defaultValue": "ddo_azuresqldw_dw"
+						"defaultValue": "SQLPool-HangSQLPool-Learn1"
 					},
 					"P_DBSchema": {
 						"type": "string",
 						"defaultValue": "purchase"
-					},
-					"P_SQLUserName": {
-						"type": "string",
-						"defaultValue": "sqladmin"
-					},
-					"P_SQLServerPass": {
-						"type": "string",
-						"defaultValue": "123"
 					}
 				},
 				"variables": {
@@ -712,48 +641,32 @@
 					"referenceName": "SQLPool_ddo_azuresqldw_dw",
 					"type": "LinkedServiceReference",
 					"parameters": {
-						"P_SQLPoolServername": {
-							"value": "@dataset().P_SQLPoolServername",
+						"P_AKV_VaultURI_SQLPool": {
+							"value": "@dataset().P_AKV_VaultURI_SQLPool",
 							"type": "Expression"
 						},
-						"P_SQLPoolDBName": {
-							"value": "@dataset().P_SQLPoolDBName",
-							"type": "Expression"
-						},
-						"P_SQLServerPass": {
-							"value": "@dataset().P_SQLServerPass",
-							"type": "Expression"
-						},
-						"P_SQLUserName": {
-							"value": "@dataset().P_SQLUserName",
+						"P_AKU_SecretName_SQLPool": {
+							"value": "@dataset().P_AKU_SecretName_SQLPool",
 							"type": "Expression"
 						}
 					}
 				},
 				"parameters": {
-					"P_SQLPoolServername": {
+					"P_AKV_VaultURI_SQLPool": {
 						"type": "string",
-						"defaultValue": "mdwdosqlsrvrdevpoc.database.windows.net"
+						"defaultValue": "Vault URI"
 					},
-					"P_SQLPoolDBName": {
+					"P_AKU_SecretName_SQLPool": {
 						"type": "string",
-						"defaultValue": "ddo_azuresqldw_dw"
+						"defaultValue": "AKV Serect Name"
 					},
 					"P_DBSchema": {
-						"type": "String",
+						"type": "string",
 						"defaultValue": "purchase"
 					},
 					"P_TableName": {
-						"type": "String",
-						"defaultValue": "DimDates"
-					},
-					"P_SQLUserName": {
 						"type": "string",
-						"defaultValue": "sqladmin"
-					},
-					"P_SQLServerPass": {
-						"type": "string",
-						"defaultValue": "123"
+						"defaultValue": "DimVendors"
 					}
 				},
 				"annotations": [],
@@ -783,24 +696,32 @@
 					"referenceName": "RawPurchaseData",
 					"type": "LinkedServiceReference",
 					"parameters": {
-						"StorageAccountPurchaseRaw": {
-							"value": "@dataset().P_StorageAccountRawFiles",
+						"P_VaultURI_StorageAccount": {
+							"value": "@dataset().P_VaultURI_StorageAccount",
+							"type": "Expression"
+						},
+						"P_SerectName_StorageAccount": {
+							"value": "@dataset().P_SerectName_StorageAccount",
 							"type": "Expression"
 						}
 					}
 				},
 				"parameters": {
-					"P_ExcelTableName": {
+					"P_VaultURI_StorageAccount": {
 						"type": "String",
-						"defaultValue": "Dim Dates"
+						"defaultValue": "VaultURI"
 					},
-					"P_StorageAccountRawFiles": {
+					"P_SerectName_StorageAccount": {
 						"type": "String",
-						"defaultValue": "mdwdostordevpoc"
+						"defaultValue": "SerectName"
 					},
 					"P_ContainerRawFiles": {
 						"type": "String",
 						"defaultValue": "raw-purchase"
+					},
+					"P_ExcelTableName": {
+						"type": "string",
+						"defaultValue": "Dim Dates"
 					}
 				},
 				"annotations": [],
@@ -827,20 +748,59 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/AzureKeyVault1')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"parameters": {
+					"P_VaultURI": {
+						"type": "String",
+						"defaultValue": "uri"
+					}
+				},
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/RawPurchaseData')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"parameters": {
-					"StorageAccountPurchaseRaw": {
+					"P_VaultURI_StorageAccount": {
 						"type": "String",
-						"defaultValue": "mdwdostordevpoc"
+						"defaultValue": "AKV Vault URI"
+					},
+					"P_SerectName_StorageAccount": {
+						"type": "string",
+						"defaultValue": "Serect Name"
 					}
 				},
 				"annotations": [],
 				"type": "AzureBlobStorage",
 				"typeProperties": {
-					"connectionString": "[parameters('RawPurchaseData_connectionString')]"
+					"connectionString": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AzureKeyVault1",
+							"type": "LinkedServiceReference",
+							"parameters": {
+								"P_VaultURI": {
+									"value": "@linkedService().P_VaultURI_StorageAccount",
+									"type": "Expression"
+								}
+							}
+						},
+						"secretName": {
+							"value": "[parameters('RawPurchaseData_properties_typeProperties_connectionString_secretName')]",
+							"type": "Expression"
+						}
+					}
 				},
 				"connectVia": {
 					"referenceName": "AutoResolveIntegrationRuntime",
@@ -848,7 +808,8 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
+				"[concat(variables('workspaceId'), '/linkedServices/AzureKeyVault1')]"
 			]
 		},
 		{
@@ -857,27 +818,35 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"parameters": {
-					"P_SQLPoolServername": {
-						"type": "String",
-						"defaultValue": "mdwdosqlsrvrdevpoc.database.windows.net"
+					"P_AKV_VaultURI_SQLPool": {
+						"type": "string",
+						"defaultValue": "uri"
 					},
-					"P_SQLPoolDBName": {
+					"P_AKU_SecretName_SQLPool": {
 						"type": "String",
-						"defaultValue": "ddo_azuresqldw_dw"
-					},
-					"P_SQLServerPass": {
-						"type": "String",
-						"defaultValue": "123"
-					},
-					"P_SQLUserName": {
-						"type": "String",
-						"defaultValue": "sqladmin"
+						"defaultValue": "serect name"
 					}
 				},
 				"annotations": [],
 				"type": "AzureSqlDW",
 				"typeProperties": {
-					"connectionString": "[parameters('SQLPool_ddo_azuresqldw_dw_connectionString')]"
+					"connectionString": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AzureKeyVault1",
+							"type": "LinkedServiceReference",
+							"parameters": {
+								"P_VaultURI": {
+									"value": "@linkedService().P_AKV_VaultURI_SQLPool",
+									"type": "Expression"
+								}
+							}
+						},
+						"secretName": {
+							"value": "[parameters('SQLPool_ddo_azuresqldw_dw_properties_typeProperties_connectionString_secretName')]",
+							"type": "Expression"
+						}
+					}
 				},
 				"connectVia": {
 					"referenceName": "AutoResolveIntegrationRuntime",
@@ -885,7 +854,8 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
+				"[concat(variables('workspaceId'), '/linkedServices/AzureKeyVault1')]"
 			]
 		},
 		{

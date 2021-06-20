@@ -5,14 +5,17 @@
 		"workspaceName": {
 			"value": "mdwdosqlsrvrdevpoc"
 		},
-		"RawPurchaseData_connectionString": {
-			"value": ""
-		},
-		"SQLPool_ddo_azuresqldw_dw_connectionString": {
-			"value": ""
-		},
 		"mdwdosqlsrvrdevpoc-WorkspaceDefaultSqlServer_connectionString": {
 			"value": ""
+		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"value": "@{linkedService().P_VaultURI}"
+		},
+		"RawPurchaseData_properties_typeProperties_connectionString_secretName": {
+			"value": "@linkedService().P_SerectName_StorageAccount"
+		},
+		"SQLPool_ddo_azuresqldw_dw_properties_typeProperties_connectionString_secretName": {
+			"value": "@linkedService().P_AKU_SecretName_SQLPool"
 		},
 		"mdwdosqlsrvrdevpoc-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://mdwdostordevpoc.dfs.core.windows.net"
