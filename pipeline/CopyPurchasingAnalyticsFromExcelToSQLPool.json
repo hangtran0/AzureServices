@@ -8,7 +8,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "StartProcessLog - ReturnProcessID",
+						"activity": "Start Log - Return ProcessID",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -103,7 +103,7 @@
 				]
 			},
 			{
-				"name": "EndProcessLog-Passed",
+				"name": "End - Log Passed",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
@@ -126,7 +126,7 @@
 					"storedProcedureParameters": {
 						"ETLProcessID": {
 							"value": {
-								"value": "@activity('StartProcessLog - ReturnProcessID').output.firstRow.ETLProcessID",
+								"value": "@activity('Start Log - Return ProcessID').output.firstRow.ETLProcessID",
 								"type": "Expression"
 							},
 							"type": "Int32"
@@ -134,6 +134,9 @@
 						"Status": {
 							"value": "PASSED",
 							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": null
 						}
 					}
 				},
@@ -153,7 +156,7 @@
 				}
 			},
 			{
-				"name": "EndProcessLog_Failed",
+				"name": "End - Log Failed",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
@@ -176,13 +179,20 @@
 					"storedProcedureParameters": {
 						"ETLProcessID": {
 							"value": {
-								"value": "@activity('StartProcessLog - ReturnProcessID').output.firstRow.ETLProcessID",
+								"value": "@activity('Start Log - Return ProcessID').output.firstRow.ETLProcessID",
 								"type": "Expression"
 							},
 							"type": "Int32"
 						},
 						"Status": {
 							"value": "FAILED",
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": {
+								"value": "@activity('CopyPurchasingAnalytics').output.errors[0].Message",
+								"type": "Expression"
+							},
 							"type": "String"
 						}
 					}
@@ -203,7 +213,7 @@
 				}
 			},
 			{
-				"name": "StartProcessLog - ReturnProcessID",
+				"name": "Start Log - Return ProcessID",
 				"description": "Insert a new record into table [LOG].[ETLProcessLogs] and return ID",
 				"type": "Lookup",
 				"dependsOn": [],
