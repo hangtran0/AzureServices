@@ -286,7 +286,7 @@
 			},
 			"P_SQLServerPass": {
 				"type": "string",
-				"defaultValue": "mdwdo-azsql-SqlP@ss-poc"
+				"defaultValue": "123"
 			}
 		},
 		"annotations": []
