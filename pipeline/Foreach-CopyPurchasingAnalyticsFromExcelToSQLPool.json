@@ -57,6 +57,14 @@
 									"P_DBSchema": {
 										"value": "@pipeline().parameters.P_DBSchema",
 										"type": "Expression"
+									},
+									"P_SQLUserName": {
+										"value": "@pipeline().parameters.P_SQLUserName",
+										"type": "Expression"
+									},
+									"P_SQLServerPass": {
+										"value": "@pipeline().parameters.P_SQLServerPass",
+										"type": "Expression"
 									}
 								}
 							}
@@ -237,6 +245,14 @@
 			"P_DBSchema": {
 				"type": "string",
 				"defaultValue": "purchase"
+			},
+			"P_SQLUserName": {
+				"type": "string",
+				"defaultValue": "sqladmin"
+			},
+			"P_SQLServerPass": {
+				"type": "string",
+				"defaultValue": "123"
 			}
 		},
 		"variables": {
