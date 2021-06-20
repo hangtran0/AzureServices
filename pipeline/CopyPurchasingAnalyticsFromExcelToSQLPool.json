@@ -97,6 +97,14 @@
 							"P_TableName": {
 								"value": "@replace(pipeline().parameters.P_ExcelTableName, ' ', '')",
 								"type": "Expression"
+							},
+							"P_SQLUserName": {
+								"value": "@pipeline().parameters.P_SQLUserName",
+								"type": "Expression"
+							},
+							"P_SQLServerPass": {
+								"value": "@pipeline().parameters.P_SQLServerPass",
+								"type": "Expression"
 							}
 						}
 					}
