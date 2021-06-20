@@ -6,7 +6,9 @@
 			"type": "LinkedServiceReference",
 			"parameters": {
 				"P_SQLPoolServername": "mdwdosqlsrvrdevpoc.database.windows.net",
-				"P_SQLPoolDBName": "ddo_azuresqldw_dw"
+				"P_SQLPoolDBName": "ddo_azuresqldw_dw",
+				"P_SQLServerPass": "mdwdo-azsql-SqlP@ss-poc",
+				"P_SQLUserName": "sqladmin"
 			}
 		},
 		"parameters": {
@@ -25,6 +27,14 @@
 			"P_TableName": {
 				"type": "String",
 				"defaultValue": "DimDates"
+			},
+			"P_SQLUserName": {
+				"type": "string",
+				"defaultValue": "sqladmin"
+			},
+			"P_SQLServerPass": {
+				"type": "string",
+				"defaultValue": "mdwdo-azsql-SqlP@ss-poc"
 			}
 		},
 		"annotations": [],
