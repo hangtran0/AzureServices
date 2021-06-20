@@ -5,7 +5,14 @@
 			{
 				"name": "Copy PurchasingAnalysisExcelFile Into DB",
 				"type": "ForEach",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "StartProcessLog - ReturnProcessID",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
@@ -55,6 +62,148 @@
 							}
 						}
 					]
+				}
+			},
+			{
+				"name": "StartProcessLog - ReturnProcessID",
+				"description": "Insert a new record into table [LOG].[ETLProcessLogs] and return ID",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlDWSource",
+						"sqlReaderStoredProcedureName": "[LOG].[sp_StartETLProcessLogs]",
+						"storedProcedureParameters": {
+							"ProcessName": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().Pipeline",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ASynapsePurchaseTableDS",
+						"type": "DatasetReference",
+						"parameters": {
+							"P_SQLPoolServername": "mdwdosqlsrvrdevpoc.database.windows.net",
+							"P_SQLPoolDBName": "ddo_azuresqldw_dw",
+							"P_DBSchema": "purchase",
+							"P_TableName": "DimDates"
+						}
+					},
+					"firstRowOnly": true
+				}
+			},
+			{
+				"name": "EndProcessLog-Passed",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Copy PurchasingAnalysisExcelFile Into DB",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[LOG].[sp_EndETLProcessLogs]",
+					"storedProcedureParameters": {
+						"ETLProcessID": {
+							"value": {
+								"value": "@activity('StartProcessLog - ReturnProcessID').output.firstRow.ETLProcessID",
+								"type": "Expression"
+							},
+							"type": "Int32"
+						},
+						"Status": {
+							"value": "PASSED",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "SQLPool_ddo_azuresqldw_dw",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"P_SQLPoolServername": {
+							"value": "@pipeline().parameters.P_SQLPoolServername",
+							"type": "Expression"
+						},
+						"P_SQLPoolDBName": {
+							"value": "@pipeline().parameters.P_SQLPoolDBName",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "EndProcessLog_Failed",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Copy PurchasingAnalysisExcelFile Into DB",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[LOG].[sp_EndETLProcessLogs]",
+					"storedProcedureParameters": {
+						"ETLProcessID": {
+							"value": {
+								"value": "@activity('StartProcessLog - ReturnProcessID').output.firstRow.ETLProcessID",
+								"type": "Expression"
+							},
+							"type": "Int32"
+						},
+						"Status": {
+							"value": "FAILED",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "SQLPool_ddo_azuresqldw_dw",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"P_SQLPoolServername": {
+							"value": "@pipeline().parameters.P_SQLPoolServername",
+							"type": "Expression"
+						},
+						"P_SQLPoolDBName": {
+							"value": "@pipeline().parameters.P_SQLPoolDBName",
+							"type": "Expression"
+						}
+					}
 				}
 			}
 		],
