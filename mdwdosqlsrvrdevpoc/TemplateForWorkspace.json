@@ -29,6 +29,15 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('workspaceName'), '/ddo_azuresqldw_dw')]",
+			"type": "Microsoft.Synapse/workspaces/sqlPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/CopyPurchasingAnalyticsFromExcelToSQLPool')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
@@ -38,7 +47,14 @@
 						"name": "CopyPurchasingAnalytics",
 						"description": "Copy the PurchasingAnalytics Excel To SQL Pool DW",
 						"type": "Copy",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "StartProcessLog - ReturnProcessID",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -126,6 +142,148 @@
 								}
 							}
 						]
+					},
+					{
+						"name": "EndProcessLog-Passed",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "CopyPurchasingAnalytics",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[LOG].[sp_EndETLProcessLogs]",
+							"storedProcedureParameters": {
+								"ETLProcessID": {
+									"value": {
+										"value": "@activity('StartProcessLog - ReturnProcessID').output.firstRow.ETLProcessID",
+										"type": "Expression"
+									},
+									"type": "Int32"
+								},
+								"Status": {
+									"value": "PASSED",
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "SQLPool_ddo_azuresqldw_dw",
+							"type": "LinkedServiceReference",
+							"parameters": {
+								"P_SQLPoolServername": {
+									"value": "@pipeline().parameters.P_SQLPoolServername",
+									"type": "Expression"
+								},
+								"P_SQLPoolDBName": {
+									"value": "@pipeline().parameters.P_SQLPoolDBName",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "EndProcessLog_Failed",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "CopyPurchasingAnalytics",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[LOG].[sp_EndETLProcessLogs]",
+							"storedProcedureParameters": {
+								"ETLProcessID": {
+									"value": {
+										"value": "@activity('StartProcessLog - ReturnProcessID').output.firstRow.ETLProcessID",
+										"type": "Expression"
+									},
+									"type": "Int32"
+								},
+								"Status": {
+									"value": "FAILED",
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "SQLPool_ddo_azuresqldw_dw",
+							"type": "LinkedServiceReference",
+							"parameters": {
+								"P_SQLPoolServername": {
+									"value": "@pipeline().parameters.P_SQLPoolServername",
+									"type": "Expression"
+								},
+								"P_SQLPoolDBName": {
+									"value": "@pipeline().parameters.P_SQLPoolDBName",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "StartProcessLog - ReturnProcessID",
+						"description": "Insert a new record into table [LOG].[ETLProcessLogs] and return ID",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlDWSource",
+								"sqlReaderStoredProcedureName": "[LOG].[sp_StartETLProcessLogs]",
+								"storedProcedureParameters": {
+									"ProcessName": {
+										"type": "String",
+										"value": {
+											"value": "@{pipeline().Pipeline}_@{pipeline().parameters.P_DBSchema}.@{replace(pipeline().parameters.P_ExcelTableName, ' ', '')}",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "ASynapsePurchaseTableDS",
+								"type": "DatasetReference",
+								"parameters": {
+									"P_SQLPoolServername": "mdwdosqlsrvrdevpoc.database.windows.net",
+									"P_SQLPoolDBName": "ddo_azuresqldw_dw",
+									"P_DBSchema": "purchase",
+									"P_TableName": "DimDates"
+								}
+							},
+							"firstRowOnly": true
+						}
 					}
 				],
 				"parameters": {
@@ -139,7 +297,7 @@
 					},
 					"P_ExcelTableName": {
 						"type": "string",
-						"defaultValue": "Dim Dates"
+						"defaultValue": "Dim Vendors"
 					},
 					"P_SQLPoolServername": {
 						"type": "string",
@@ -158,9 +316,6 @@
 					"V_ListOfSheetNames": {
 						"type": "String",
 						"defaultValue": "Fact PurchaseRequests,Fact PAMS,Fact PurchaseOrders,Fact Receives,Fact Payments"
-					},
-					"SheetName": {
-						"type": "String"
 					}
 				},
 				"annotations": []
@@ -168,7 +323,7 @@
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/datasets/PurchasingAnalyticseExcelDS')]",
 				"[concat(variables('workspaceId'), '/datasets/ASynapsePurchaseTableDS')]",
-				"[concat(variables('workspaceId'), '/linkedServices/RawPurchaseData')]"
+				"[concat(variables('workspaceId'), '/linkedServices/SQLPool_ddo_azuresqldw_dw')]"
 			]
 		},
 		{
@@ -178,7 +333,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "ForEach1",
+						"name": "Copy PurchasingAnalysisExcelFile Into DB",
 						"type": "ForEach",
 						"dependsOn": [],
 						"userProperties": [],
@@ -510,15 +665,6 @@
 			"properties": {
 				"type": "ManagedIdentity",
 				"typeProperties": {}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/ddo_azuresqldw_dw')]",
-			"type": "Microsoft.Synapse/workspaces/sqlPools",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"annotations": []
 			},
 			"dependsOn": []
 		}
