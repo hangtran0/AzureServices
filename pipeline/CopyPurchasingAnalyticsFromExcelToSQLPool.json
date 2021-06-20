@@ -6,7 +6,14 @@
 				"name": "CopyPurchasingAnalytics",
 				"description": "Copy the PurchasingAnalytics Excel To SQL Pool DW",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "SetETLProcessID",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -94,6 +101,166 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "StartProcessLog",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[LOG].[sp_StartETLProcessLogs]",
+					"storedProcedureParameters": {
+						"ETLProcessID": {
+							"value": "",
+							"type": "Int32"
+						},
+						"ProcessName": {
+							"value": "@{pipeline().Pipeline}_@{pipeline().parameters.P_DBSchema}.@{replace(pipeline().parameters.P_ExcelTableName, ' ', '')}",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "SQLPool_ddo_azuresqldw_dw",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"P_SQLPoolServername": {
+							"value": "@pipeline().parameters.P_SQLPoolServername",
+							"type": "Expression"
+						},
+						"P_SQLPoolDBName": {
+							"value": "@pipeline().parameters.P_SQLPoolDBName",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "SetETLProcessID",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "StartProcessLog",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "V_ETLProcessID",
+					"value": {
+						"value": "@activity('StartProcessLog').output.firstRow.ETLProcessID",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "EndProcessLog-Passed",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "CopyPurchasingAnalytics",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[LOG].[sp_EndETLProcessLogs]",
+					"storedProcedureParameters": {
+						"ETLProcessID": {
+							"value": {
+								"value": "@int(variables('V_ETLProcessID'))",
+								"type": "Expression"
+							},
+							"type": "Int32"
+						},
+						"Status": {
+							"value": "PASSED",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "SQLPool_ddo_azuresqldw_dw",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"P_SQLPoolServername": {
+							"value": "@pipeline().parameters.P_SQLPoolServername",
+							"type": "Expression"
+						},
+						"P_SQLPoolDBName": {
+							"value": "@pipeline().parameters.P_SQLPoolDBName",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "EndProcessLog_Failed",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "CopyPurchasingAnalytics",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[LOG].[sp_EndETLProcessLogs]",
+					"storedProcedureParameters": {
+						"ETLProcessID": {
+							"value": {
+								"value": "@int(variables('V_ETLProcessID'))",
+								"type": "Expression"
+							},
+							"type": "Int32"
+						},
+						"Status": {
+							"value": "FAILED",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "SQLPool_ddo_azuresqldw_dw",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"P_SQLPoolServername": {
+							"value": "@pipeline().parameters.P_SQLPoolServername",
+							"type": "Expression"
+						},
+						"P_SQLPoolDBName": {
+							"value": "@pipeline().parameters.P_SQLPoolDBName",
+							"type": "Expression"
+						}
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -127,7 +294,7 @@
 				"type": "String",
 				"defaultValue": "Fact PurchaseRequests,Fact PAMS,Fact PurchaseOrders,Fact Receives,Fact Payments"
 			},
-			"SheetName": {
+			"V_ETLProcessID": {
 				"type": "String"
 			}
 		},
