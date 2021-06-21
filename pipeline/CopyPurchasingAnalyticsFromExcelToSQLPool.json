@@ -126,7 +126,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[LOG].[sp_EndETLProcessLogs]",
+					"storedProcedureName": "[log].[sp_EndETLProcessLog]",
 					"storedProcedureParameters": {
 						"ETLProcessID": {
 							"value": {
@@ -179,7 +179,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[LOG].[sp_EndETLProcessLogs]",
+					"storedProcedureName": "[log].[sp_EndETLProcessLog]",
 					"storedProcedureParameters": {
 						"ETLProcessID": {
 							"value": {
@@ -218,7 +218,7 @@
 			},
 			{
 				"name": "Start Log - Return ProcessID",
-				"description": "Insert a new record into table [LOG].[ETLProcessLogs] and return ID",
+				"description": "Insert a new record into table [log].[ETLProcessLog] and return ID",
 				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
@@ -232,7 +232,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlDWSource",
-						"sqlReaderStoredProcedureName": "[LOG].[sp_StartETLProcessLogs]",
+						"sqlReaderStoredProcedureName": "[log].[sp_StartETLProcessLog]",
 						"storedProcedureParameters": {
 							"ProcessName": {
 								"type": "String",
