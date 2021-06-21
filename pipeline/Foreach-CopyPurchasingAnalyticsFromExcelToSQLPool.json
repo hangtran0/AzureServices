@@ -43,7 +43,7 @@
 										"type": "Expression"
 									},
 									"P_ExcelTableName": {
-										"value": "@item()",
+										"value": "@split(item(), '_')[0]",
 										"type": "Expression"
 									},
 									"P_AKV_VaultURI": {
@@ -55,7 +55,11 @@
 										"type": "Expression"
 									},
 									"P_DBSchema": {
-										"value": "@pipeline().parameters.P_DBSchema",
+										"value": "@toLower(split(item(), ' ')[0])",
+										"type": "Expression"
+									},
+									"P_TableName": {
+										"value": "@split(item(), '_')[1]",
 										"type": "Expression"
 									}
 								}
@@ -104,12 +108,7 @@
 							"P_AKU_SecretName_SQLPool": {
 								"value": "@pipeline().parameters.P_AKU_SecretName_SQLPool",
 								"type": "Expression"
-							},
-							"P_DBSchema": {
-								"value": "@pipeline().parameters.P_DBSchema",
-								"type": "Expression"
-							},
-							"P_TableName": "DimDates"
+							}
 						}
 					},
 					"firstRowOnly": true
@@ -242,34 +241,30 @@
 			"P_AKU_SecretName_SQLPool": {
 				"type": "string",
 				"defaultValue": "SQLPool-HangSQLPool-Learn1"
-			},
-			"P_DBSchema": {
-				"type": "string",
-				"defaultValue": "purchase"
 			}
 		},
 		"variables": {
 			"V_ListOfSheetNames": {
 				"type": "Array",
 				"defaultValue": [
-					"Dim Dates",
-					"Dim Vendors",
-					"Dim VendorGroups",
-					"Dim Companies",
-					"Dim Departments",
-					"Dim Currencies",
-					"Dim Products",
-					"Dim ProductSubGroups",
-					"Dim ProductGroups",
-					"Dim PAMSTypes",
-					"Dim Employees",
-					"Dim SavingTypes",
-					"Dim PaymentTerms",
-					"Fact PurchaseRequests",
-					"Fact PAMS",
-					"Fact PurchaseOrders",
-					"Fact Receives",
-					"Fact Payments"
+					"Dim Dates_Date",
+					"Dim Vendors_Vendor",
+					"Dim VendorGroups_VendorGroup",
+					"Dim Companies_Company",
+					"Dim Departments_Department",
+					"Dim _Currency",
+					"Dim Products_Product",
+					"Dim ProductSubGroups_ProductSubGroup",
+					"Dim ProductGroups_ProductGroup",
+					"Dim PAMSTypes_PAMSType",
+					"Dim Employees_Employee",
+					"Dim SavingTypes_SavingType",
+					"Dim PaymentTerms_PaymentTerm",
+					"Fact PurchaseRequests_PurchaseRequest",
+					"Fact PAMS_PAMS",
+					"Fact PurchaseOrders_PurchaseOrder",
+					"Fact Receives_Receive",
+					"Fact Payments_Payment"
 				]
 			}
 		},
