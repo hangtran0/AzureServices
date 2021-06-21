@@ -108,7 +108,9 @@
 							"P_AKU_SecretName_SQLPool": {
 								"value": "@pipeline().parameters.P_AKU_SecretName_SQLPool",
 								"type": "Expression"
-							}
+							},
+							"P_DBSchema": "purchase",
+							"P_TableName": "DimVendors"
 						}
 					},
 					"firstRowOnly": true
@@ -247,24 +249,7 @@
 			"V_ListOfSheetNames": {
 				"type": "Array",
 				"defaultValue": [
-					"Dim Dates_Date",
-					"Dim Vendors_Vendor",
-					"Dim VendorGroups_VendorGroup",
-					"Dim Companies_Company",
-					"Dim Departments_Department",
-					"Dim _Currency",
-					"Dim Products_Product",
-					"Dim ProductSubGroups_ProductSubGroup",
-					"Dim ProductGroups_ProductGroup",
-					"Dim PAMSTypes_PAMSType",
-					"Dim Employees_Employee",
-					"Dim SavingTypes_SavingType",
-					"Dim PaymentTerms_PaymentTerm",
-					"Fact PurchaseRequests_PurchaseRequest",
-					"Fact PAMS_PAMS",
-					"Fact PurchaseOrders_PurchaseOrder",
-					"Fact Receives_Receive",
-					"Fact Payments_Payment"
+					"Dim Dates_Date"
 				]
 			}
 		},
