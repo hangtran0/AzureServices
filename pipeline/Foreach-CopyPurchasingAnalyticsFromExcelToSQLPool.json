@@ -254,7 +254,7 @@
 					"Dim VendorGroups_VendorGroup",
 					"Dim Companies_Company",
 					"Dim Departments_Department",
-					"Dim _Currency",
+					"Dim Currencies_Currency",
 					"Dim Products_Product",
 					"Dim ProductSubGroups_ProductSubGroup",
 					"Dim ProductGroups_ProductGroup",
