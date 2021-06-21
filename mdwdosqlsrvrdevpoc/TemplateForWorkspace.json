@@ -33,6 +33,15 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('workspaceName'), '/ddo_azuresqldw_dw')]",
+			"type": "Microsoft.Synapse/workspaces/sqlPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/CopyPurchasingAnalyticsFromExcelToSQLPool')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
@@ -595,7 +604,7 @@
 							"Dim VendorGroups_VendorGroup",
 							"Dim Companies_Company",
 							"Dim Departments_Department",
-							"Dim _Currency",
+							"Dim Currencies_Currency",
 							"Dim Products_Product",
 							"Dim ProductSubGroups_ProductSubGroup",
 							"Dim ProductGroups_ProductGroup",
@@ -914,15 +923,6 @@
 			"properties": {
 				"type": "ManagedIdentity",
 				"typeProperties": {}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/ddo_azuresqldw_dw')]",
-			"type": "Microsoft.Synapse/workspaces/sqlPools",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"annotations": []
 			},
 			"dependsOn": []
 		}
