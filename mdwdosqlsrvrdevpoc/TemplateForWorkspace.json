@@ -449,7 +449,9 @@
 									"P_AKU_SecretName_SQLPool": {
 										"value": "@pipeline().parameters.P_AKU_SecretName_SQLPool",
 										"type": "Expression"
-									}
+									},
+									"P_DBSchema": "purchase",
+									"P_TableName": "DimVendors"
 								}
 							},
 							"firstRowOnly": true
