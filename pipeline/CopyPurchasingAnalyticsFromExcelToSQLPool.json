@@ -43,7 +43,7 @@
 					"sink": {
 						"type": "SqlDWSink",
 						"preCopyScript": {
-							"value": "IF Object_id('@{pipeline().parameters.P_DBSchema}.@{replace(pipeline().parameters.P_ExcelTableName, ' ', '')}', 'U') IS NOT NULL\nTRUNCATE TABLE @{pipeline().parameters.P_DBSchema}.@{replace(pipeline().parameters.P_ExcelTableName, ' ', '')}",
+							"value": "IF Object_id('@{pipeline().parameters.P_DBSchema}.@{pipeline().parameters.P_TableName}', 'U') IS NOT NULL\nTRUNCATE TABLE @{pipeline().parameters.P_DBSchema}.@{pipeline().parameters.P_TableName}",
 							"type": "Expression"
 						},
 						"allowPolyBase": true,
@@ -99,7 +99,7 @@
 								"type": "Expression"
 							},
 							"P_TableName": {
-								"value": "@replace(pipeline().parameters.P_ExcelTableName, ' ', '')",
+								"value": "@pipeline().parameters.P_TableName",
 								"type": "Expression"
 							}
 						}
@@ -257,10 +257,7 @@
 								"value": "@pipeline().parameters.P_AKU_SecretName_SQLPool",
 								"type": "Expression"
 							},
-							"P_DBSchema": {
-								"value": "@pipeline().parameters.P_DBSchema",
-								"type": "Expression"
-							},
+							"P_DBSchema": "dbo",
 							"P_TableName": "DimDates"
 						}
 					},
@@ -290,8 +287,10 @@
 				"defaultValue": "SQLPool-HangSQLPool-Learn1"
 			},
 			"P_DBSchema": {
-				"type": "string",
-				"defaultValue": "purchase"
+				"type": "string"
+			},
+			"P_TableName": {
+				"type": "string"
 			}
 		},
 		"annotations": []
