@@ -237,7 +237,7 @@
 							"ProcessName": {
 								"type": "String",
 								"value": {
-									"value": "@{pipeline().Pipeline}_@{pipeline().parameters.P_DBSchema}.@{replace(pipeline().parameters.P_ExcelTableName, ' ', '')}",
+									"value": "@{pipeline().Pipeline}_@{pipeline().parameters.P_DBSchema}.@{pipeline().parameters.P_TableName}",
 									"type": "Expression"
 								}
 							}
