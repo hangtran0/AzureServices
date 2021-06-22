@@ -19,9 +19,6 @@
 		},
 		"mdwdosqlsrvrdevpoc-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://mdwdostordevpoc.dfs.core.windows.net"
-		},
-		"Trigger_tumblingwindow_test_properties_pipeline_parameters_startedAt": {
-			"value": "@trigger().outputs.windowStartTime"
 		}
 	}
 }
