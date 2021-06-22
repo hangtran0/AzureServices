@@ -6,11 +6,7 @@
 				"name": "Set variable1",
 				"type": "SetVariable",
 				"dependsOn": [],
-				"userProperties": [
-					{
-						"name": "startdt"
-					}
-				],
+				"userProperties": [],
 				"typeProperties": {
 					"variableName": "startdt",
 					"value": {
