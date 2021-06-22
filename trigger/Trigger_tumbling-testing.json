@@ -1,0 +1,28 @@
+{
+	"name": "Trigger_tumbling-testing",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Pipeline 1",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"startedAt": "@trigger().outputs.windowStartTime"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 1,
+				"startTime": "2021-06-22T05:10:00Z",
+				"endTime": "2021-06-22T08:15:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}
