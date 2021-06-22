@@ -1,0 +1,35 @@
+{
+	"name": "Pipeline 1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [
+					{
+						"name": "startdt"
+					}
+				],
+				"typeProperties": {
+					"variableName": "startdt",
+					"value": {
+						"value": "@pipeline().parameters.startedAt",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"startedAt": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"startdt": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}
