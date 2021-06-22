@@ -629,6 +629,44 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/Pipeline 1')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Set variable1",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [
+							{
+								"name": "startdt"
+							}
+						],
+						"typeProperties": {
+							"variableName": "startdt",
+							"value": {
+								"value": "@pipeline().parameters.startedAt",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"parameters": {
+					"startedAt": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"startdt": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/ASynapsePurchaseTableDS')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
