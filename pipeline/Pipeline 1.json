@@ -27,7 +27,8 @@
 		},
 		"variables": {
 			"startdt": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "dsd"
 			}
 		},
 		"annotations": []
